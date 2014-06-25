@@ -24,11 +24,11 @@ describe "Authentication" do
   	describe "with valid information" do
       let(:user) { FactoryGirl.create(:user) }
       before { sign_in user }
-      #before do
+      # before do
       #  fill_in "Email",    with: user.email.upcase
       #  fill_in "Password", with: user.password
       #  click_button "Sign in"
-      #end
+      # end
 
       it { should have_title(user.name) }
       #it { should have_selector('title',  text: user.name) } <-- use instead have_title if form_for is implemented.

@@ -1,4 +1,7 @@
 require 'spec_helper'
+require 'database_cleaner'
+
+DatabaseCleaner.start
 
 describe "User pages" do
 
@@ -62,6 +65,10 @@ describe "User pages" do
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
     before { visit user_path(user) }
+    # before do
+    #   sign_in user
+    #   visit user_path(user)
+    # end
 
     it { should have_content(user.name) }
     it { should have_title(user.name) }
@@ -74,7 +81,7 @@ describe "User pages" do
     it { should have_title(full_title('Sign up')) }
   end
 
-  describe "signup" do
+  describe "signup", :logeduser => 'true' do
 
     before { visit signup_path }
  
@@ -100,12 +107,18 @@ describe "User pages" do
         fill_in "Password",     with: "foobar"
         fill_in "Confirmation", with: "foobar"
       end
+
       # Tests for the post-save behavior in the create action.
       describe "after saving the user" do
-        before { click_button submit }
+        before {
+          click_button submit
+          #save_and_open_page
+        }
+
         let(:user) { User.find_by(email: 'user@example.com') }
 
-        it { should have_link('Sign out') }
+        #it { should have_link('Sign out') }
+        it { should have_link('Sign in') }
         it { should have_title(user.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end
@@ -145,6 +158,7 @@ describe "User pages" do
         fill_in "Password",         with: user.password
         fill_in "Confirm Password", with: user.password
         click_button "Save changes"
+        #save_and_open_page
       end
 
       it { should have_title(new_name) }
